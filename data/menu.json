@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Yakiniku Beef Bowl",
+    "price": "61000"
+  },
+  {
+    "id": 2,
+    "name": "Beef Wakame Udon Soup",
+    "price": "79000"
+  },
+  {
+    "id": 3,
+    "name": "Es Kopcen Kopi Susu",
+    "price": "38000"
+  },
+  {
+    "id": 4,
+    "name": "Blackpepper Beef Bowl + Onsen Egg",
+    "price": "78000"
+  },
+  {
+    "id": 5,
+    "name": "Red Hot Chilli Tori Don",
+    "price": "47000"
+  },
+  {
+    "id": 6,
+    "name": "Ebi Shrimp Bowl",
+    "price": "55000"
+  },
+  {
+    "id": 7,
+    "name": "Garlic Chicken Teriyaki Set - Red Hot Chilli",
+    "price": "41000"
+  },
+  {
+    "id": 8,
+    "name": "Garlic Chicken Teriyaki",
+    "price": "31000"
+  },
+  {
+    "id": 9,
+    "name": "Chicken Karage",
+    "price": "32000"
+  },
+  {
+    "id": 10,
+    "name": "Taro Milk 1 Liter",
+    "price": "71000"
+  }
+]
