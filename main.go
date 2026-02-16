@@ -3,62 +3,149 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"weekly/service"
 )
 
 func showMenu() {
-	fmt.Println("Yoshinoya Menu")
-	fmt.Println("1. Yakiniku Beef Bowl\t\t\t\t\tIDR 61.000")
-	fmt.Println("2. Beef Wakame Udon Soup\t\t\t\tIDR 79.000")
-	fmt.Println("3. Es Kopcen Kopi Susu\t\t\t\t\tIDR 38000")
-	fmt.Println("4. Blackpepper Beef Bowl + Onsen Egg\t\t\tIDR 78000")
-	fmt.Println("5. Red Hot Chilli Tori Don \t\t\t\tIDR 47.000")
-	fmt.Println("6. Ebi Shrimp Bowl\t\t\t\t\tIDR 55.000")
-	fmt.Println("7. Garlic Chicken Teriyaki Set - Red Hot Chilli\t\tIDR 41000")
-	fmt.Println("8. Garlic Chicken Teriyaki\t\t\t\tIDR 31.000")
-	fmt.Println("9. Chicken Karage\t\t\t\t\tIDR 32.000")
-	fmt.Println("10. Taro Milk 1 Liter\t\t\t\t\tIDR 71.000")
+
+	menus, err := service.GetMenu()
+	if err != nil {
+		fmt.Println("Gagal ambil menu:", err)
+		return
+	}
+
+	fmt.Println("\n===== MENU =====")
+	for _, m := range menus {
+		fmt.Printf("%-3d %-40s IDR %8s\n",
+			m.ID, m.Name, m.Price)
+	}
+
+	var pilih int
+	fmt.Print("\nPilih ID menu (0 kembali): ")
+	fmt.Scan(&pilih)
+
+	if pilih == 0 {
+		return
+	}
+
+	for _, m := range menus {
+		if m.ID == pilih {
+			service.AddToCart(m)
+			fmt.Println("✅ Masuk cart")
+			return
+		}
+	}
+
+	fmt.Println("Menu tidak ditemukan")
 }
 
-func cart(){
+func cart() {
+
+	cart := service.GetCart()
+
+	if len(cart) == 0 {
+		fmt.Println("Cart kosong")
+		return
+	}
+
+	total := 0
+
+	fmt.Println("\n===== CART =====")
+	for i, item := range cart {
+
+		priceInt, _ := strconv.Atoi(item.Price)
+		total += priceInt
+
+		fmt.Printf("%d. %-40s IDR %s\n",
+			i+1, item.Name, item.Price)
+	}
+
+	fmt.Println("Total:", total)
+
+	fmt.Println("\n1. Checkout")
+	fmt.Println("2. Clear Cart")
+	fmt.Println("0. Kembali")
+
+	var pilih int
+	fmt.Scan(&pilih)
+
+	switch pilih {
+	case 1:
+		checkout()
+	case 2:
+		service.ClearCart()
+		fmt.Println("Cart dikosongkan")
+	}
 }
 
-func history(){
+func checkout() {
+
+	cart := service.GetCart()
+
+	if len(cart) == 0 {
+		fmt.Println("Cart kosong")
+		return
+	}
+
+	service.AddHistory(cart)
+	service.ClearCart()
+
+	fmt.Println("✅ Checkout berhasil")
+}
+
+func history() {
+
+	histories := service.GetHistory()
+
+	if len(histories) == 0 {
+		fmt.Println("Belum ada history")
+		return
+	}
+
+	fmt.Println("\n===== HISTORY =====")
+
+	for i, order := range histories {
+
+		fmt.Printf("\nOrder #%d\n", i+1)
+
+		total := 0
+
+		for _, item := range order {
+
+			priceInt, _ := strconv.Atoi(item.Price)
+			total += priceInt
+
+			fmt.Printf("- %-35s IDR %s\n",
+				item.Name, item.Price)
+		}
+
+		fmt.Println("Total:", total)
+	}
 }
 
 func main() {
 
-	for true {
-		defer func() {
-			if r := recover(); r != nil {
-				fmt.Println(r)
-				fmt.Println("Mengakhiri program...")
-			}
-    	}()
+	for {
 
-		fmt.Println("Welcome to Yoshinoya Restaurant!")
-		fmt.Println("================================")
-		fmt.Println("1. Lihat Menu")
-		fmt.Println("2. Lihat Keranjang")
-		fmt.Println("3. Riwayat Pesanan")
-		fmt.Println("4. Keluar")
+		fmt.Println("\n1. Menu")
+		fmt.Println("2. Cart")
+		fmt.Println("3. History")
+		fmt.Println("4. Exit")
 
-		var choice int
-		fmt.Print("Masukkan pilihan (1-4): ")
-		fmt.Scan(&choice)
+		var pilih int
+		fmt.Print("Pilih: ")
+		fmt.Scan(&pilih)
 
-		switch choice {
-		case 1: 
+		switch pilih {
+		case 1:
 			showMenu()
 		case 2:
 			cart()
 		case 3:
 			history()
-		case 4: 
+		case 4:
 			os.Exit(0)
-		default:
-			panic("Pilihan tidak valid")
 		}
 	}
-	
-	// os.Exit(0)
 }
